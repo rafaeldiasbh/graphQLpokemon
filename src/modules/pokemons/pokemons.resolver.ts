@@ -4,7 +4,9 @@ import { Pokemon } from './entities/pokemon.entity';
 import { PokemonsService } from './pokemons.service';
 import { CreatePokemonDto } from './dto/create-pokemon.dto';
 import { UpdatePokemonDto } from './dto/update-pokemon.dto';
-import { PaginationOptions, SortOptions, FilterOptions } from '../../common/entities/base.entity';
+import { FilterOptionsDto } from '../../common/dto/filter-options.dto';
+import { SortOptionsDto } from '../../common/dto/sort-options.dto';
+import { PaginationOptionsDto } from '../../common/dto/pagination-options.dto'; 
 
 @Resolver(() => Pokemon)
 export class PokemonsResolver {
@@ -12,9 +14,9 @@ export class PokemonsResolver {
 
   @Query(() => [Pokemon])
   async findAllPokemon(
-    @Args('pagination', { nullable: true }) pagination?: PaginationOptions,
-    @Args('sort', { nullable: true }) sort?: SortOptions,
-    @Args('filters', { nullable: true }) filters?: FilterOptions[],
+    @Args('pagination', { type: () => PaginationOptionsDto, nullable: true }) pagination?: PaginationOptionsDto,
+    @Args('sort', { type: () => SortOptionsDto, nullable: true }) sort?: SortOptionsDto,
+    @Args('filters', { type: () => [FilterOptionsDto], nullable: true }) filters?: FilterOptionsDto[],
   ): Promise<{ data: Pokemon[]; total: number }> {
     return this.pokemonsService.findAll(pagination, sort, filters);
   }

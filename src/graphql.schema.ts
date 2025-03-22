@@ -8,6 +8,22 @@
 /* tslint:disable */
 /* eslint-disable */
 
+export class PaginationOptionsDto {
+    page: number;
+    itemsPerPage: number;
+}
+
+export class SortOptionsDto {
+    field: string;
+    order: string;
+}
+
+export class FilterOptionsDto {
+    field: string;
+    value: string;
+    operator?: Nullable<string>;
+}
+
 export class CreatePokemonDto {
     name: string;
     typeIds: number[];
@@ -36,16 +52,16 @@ export class Type {
 export class Pokemon {
     id: number;
     name: string;
-    types?: Nullable<Type[]>;
+    types: Type[];
     created_at: string;
 }
 
 export abstract class IQuery {
     abstract hello(): string | Promise<string>;
 
-    abstract pokemons(): Pokemon[] | Promise<Pokemon[]>;
+    abstract findAllPokemon(pagination?: Nullable<PaginationOptionsDto>, sort?: Nullable<SortOptionsDto>, filters?: Nullable<FilterOptionsDto[]>): Pokemon[] | Promise<Pokemon[]>;
 
-    abstract pokemon(id: number): Pokemon | Promise<Pokemon>;
+    abstract findOnePokemon(id: number): Pokemon | Promise<Pokemon>;
 
     abstract findAllTypes(): Type[] | Promise<Type[]>;
 
@@ -53,11 +69,11 @@ export abstract class IQuery {
 }
 
 export abstract class IMutation {
-    abstract createPokemon(createPokemonDto: CreatePokemonDto): Pokemon | Promise<Pokemon>;
+    abstract createOnePokemon(input: CreatePokemonDto): Pokemon | Promise<Pokemon>;
 
-    abstract updatePokemon(updatePokemonDto: UpdatePokemonDto): Pokemon | Promise<Pokemon>;
+    abstract updateOnePokemon(id: number, input: UpdatePokemonDto): Pokemon | Promise<Pokemon>;
 
-    abstract removePokemon(id: number): Pokemon | Promise<Pokemon>;
+    abstract deleteOnePokemon(id: number): Pokemon | Promise<Pokemon>;
 
     abstract createType(input: CreateTypeDto): Type | Promise<Type>;
 

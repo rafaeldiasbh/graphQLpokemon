@@ -1,103 +1,79 @@
-// src/common/entities/base.entity.ts
 import { Repository, SelectQueryBuilder } from 'typeorm';
 import { NotFoundException } from '@nestjs/common';
-
-export interface PaginationOptions {
-  page: number;
-  itemsPerPage: number;
-}
-
-export interface SortOptions {
-  field: string;
-  order: 'ASC' | 'DESC';
-}
-
-export interface FilterOptions {
-  field: string;
-  value: any;
-  operator?:
-    | '='
-    | '!='
-    | '>'
-    | '<'
-    | '>='
-    | '<='
-    | 'BETWEEN'
-    | 'LIKE'
-    | 'IN'
-    | 'NOT IN';
-}
+import { PaginationOptionsDto } from '../dto/pagination-options.dto';
+import { FilterOptionsDto } from '../dto/filter-options.dto';
+import { SortOptionsDto } from '../dto/sort-options.dto';
 
 export class BaseEntity {
-    static applyFilters<T>(
+  static applyFilters<T>(
     query: SelectQueryBuilder<T>,
     repository: Repository<T>,
-    filters?: FilterOptions[],
-    ): SelectQueryBuilder<T> {
+    filters?: FilterOptionsDto[],
+  ): SelectQueryBuilder<T> {
     if (filters && filters.length > 0) {
-        const validFields = repository.metadata.columns.map((column) => column.propertyName);
+      const validFields = repository.metadata.columns.map((column) => column.propertyName);
 
-        filters.forEach((filter) => {
+      filters.forEach((filter) => {
         const { field, value, operator = '=' } = filter;
 
-        // Validate the field
+        // Validate the field to prevent SQL injection
         if (!validFields.includes(field)) {
-            throw new NotFoundException(`Invalid filter field: ${field}`);
+          throw new NotFoundException(`Invalid filter field: ${field}`);
         }
 
         switch (operator) {
-            case '=':
-            case '!=':
-            case '>':
-            case '<':
-            case '>=':
-            case '<=':
+          case '=':
+          case '!=':
+          case '>':
+          case '<':
+          case '>=':
+          case '<=':
             query.andWhere(`entity.${field} ${operator} :value`, { value });
             break;
 
-            case 'BETWEEN':
+          case 'BETWEEN':
             if (Array.isArray(value) && value.length === 2) {
-                query.andWhere(`entity.${field} BETWEEN :value1 AND :value2`, {
+              query.andWhere(`entity.${field} BETWEEN :value1 AND :value2`, {
                 value1: value[0],
                 value2: value[1],
-                });
+              });
             } else {
-                throw new Error('BETWEEN operator requires an array of two values.');
+              throw new Error('BETWEEN operator requires an array of two values.');
             }
             break;
 
-            case 'LIKE':
+          case 'LIKE':
             query.andWhere(`entity.${field} LIKE :value`, { value: `%${value}%` });
             break;
 
-            case 'IN':
+          case 'IN':
             if (Array.isArray(value)) {
-                query.andWhere(`entity.${field} IN (:...values)`, { values: value });
+              query.andWhere(`entity.${field} IN (:...values)`, { values: value });
             } else {
-                throw new Error('IN operator requires an array of values.');
+              throw new Error('IN operator requires an array of values.');
             }
             break;
 
-            case 'NOT IN':
+          case 'NOT IN':
             if (Array.isArray(value)) {
-                query.andWhere(`entity.${field} NOT IN (:...values)`, { values: value });
+              query.andWhere(`entity.${field} NOT IN (:...values)`, { values: value });
             } else {
-                throw new Error('NOT IN operator requires an array of values.');
+              throw new Error('NOT IN operator requires an array of values.');
             }
             break;
 
-            default:
+          default:
             throw new Error(`Unsupported operator: ${operator}`);
         }
-        });
+      });
     }
     return query;
-    }
+  }
 
   static applySorting<T>(
     query: SelectQueryBuilder<T>,
     repository: Repository<T>,
-    sort?: SortOptions,
+    sort?: SortOptionsDto,
   ): SelectQueryBuilder<T> {
     if (sort) {
       const validFields = repository.metadata.columns.map((column) => column.propertyName);
@@ -111,7 +87,7 @@ export class BaseEntity {
 
   static applyPagination<T>(
     query: SelectQueryBuilder<T>,
-    pagination?: PaginationOptions,
+    pagination?: PaginationOptionsDto,
   ): SelectQueryBuilder<T> {
     if (pagination) {
       const { page, itemsPerPage } = pagination;
@@ -123,23 +99,22 @@ export class BaseEntity {
 
   static applyConditions<T>(
     repository: Repository<T>,
-    pagination?: PaginationOptions,
-    sort?: SortOptions,
-    filters?: FilterOptions[],
+    pagination?: PaginationOptionsDto,
+    sort?: SortOptionsDto,
+    filters?: FilterOptionsDto[],
   ): SelectQueryBuilder<T> {
     const query = repository.createQueryBuilder('entity');
-    this.applyFilters(query, repository, filters); // Pass repository for validation
+    this.applyFilters(query, repository, filters);
     this.applySorting(query, repository, sort);
     this.applyPagination(query, pagination);
-
     return query;
   }
 
   static async findWithPagination<T>(
     repository: Repository<T>,
-    pagination?: PaginationOptions,
-    sort?: SortOptions,
-    filters?: FilterOptions[],
+    pagination?: PaginationOptionsDto, // Use PaginationOptionsDto
+    sort?: SortOptionsDto, // Use SortOptionsDto
+    filters?: FilterOptionsDto[], // Use FilterOptionsDto
   ): Promise<{ data: T[]; total: number }> {
     const query = this.applyConditions(repository, pagination, sort, filters);
     const [data, total] = await query.getManyAndCount();

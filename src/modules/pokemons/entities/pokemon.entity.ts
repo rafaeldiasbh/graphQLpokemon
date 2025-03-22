@@ -17,8 +17,8 @@ export class Pokemon extends BaseEntity {
 
   @ManyToMany(() => Type, (type) => type.pokemons)
   @JoinTable()
-  @Field(() => [Type], { nullable: true })
-  types?: Type[];
+  @Field(() => [Type])
+  types: Type[];
 
   @Field(() => String)
   @Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })

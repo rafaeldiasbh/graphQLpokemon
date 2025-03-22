@@ -6,7 +6,9 @@ import { Pokemon } from './entities/pokemon.entity';
 import { CreatePokemonDto } from './dto/create-pokemon.dto';
 import { UpdatePokemonDto } from './dto/update-pokemon.dto';
 import { TypesService } from '../types/types.service';
-import { PaginationOptions, SortOptions, FilterOptions } from '../../common/entities/base.entity';
+import { FilterOptionsDto } from '../../common/dto/filter-options.dto';
+import { SortOptionsDto } from '../../common/dto/sort-options.dto';
+import { PaginationOptionsDto } from '../../common/dto/pagination-options.dto'; 
 
 @Injectable()
 export class PokemonsService {
@@ -17,9 +19,9 @@ export class PokemonsService {
   ) {}
 
   async findAll(
-    pagination?: PaginationOptions,
-    sort?: SortOptions,
-    filters?: FilterOptions[],
+    pagination?: PaginationOptionsDto,
+    sort?: SortOptionsDto,
+    filters?: FilterOptionsDto[],
   ): Promise<{ data: Pokemon[]; total: number }> {
     return Pokemon.findWithPagination(this.pokemonRepository, pagination, sort, filters);
   }

@@ -12,22 +12,41 @@ type Type {
 type Pokemon {
   id: Int!
   name: String!
-  types: [Type!]
+  types: [Type!]!
   created_at: String!
 }
 
 type Query {
   hello: String!
-  pokemons: [Pokemon!]!
-  pokemon(id: Int!): Pokemon!
+  findAllPokemon(pagination: PaginationOptionsDto, sort: SortOptionsDto, filters: [FilterOptionsDto!]): [Pokemon!]!
+  findOnePokemon(id: Float!): Pokemon!
   findAllTypes: [Type!]!
   findOneType(id: Float!): Type!
 }
 
+input PaginationOptionsDto {
+  """Page number (starts from 1)"""
+  page: Int! = 1
+
+  """Number of items per page (Defaults to 10)"""
+  itemsPerPage: Int! = 10
+}
+
+input SortOptionsDto {
+  field: String!
+  order: String!
+}
+
+input FilterOptionsDto {
+  field: String!
+  value: String!
+  operator: String
+}
+
 type Mutation {
-  createPokemon(createPokemonDto: CreatePokemonDto!): Pokemon!
-  updatePokemon(updatePokemonDto: UpdatePokemonDto!): Pokemon!
-  removePokemon(id: Int!): Pokemon!
+  createOnePokemon(input: CreatePokemonDto!): Pokemon!
+  updateOnePokemon(id: Float!, input: UpdatePokemonDto!): Pokemon!
+  deleteOnePokemon(id: Float!): Pokemon!
   createType(input: CreateTypeDto!): Type!
   updateType(id: Float!, input: UpdateTypeDto!): Type!
   removeType(id: Float!): Type!
