@@ -6,8 +6,8 @@ import { HelloModule } from './modules/hello/hello.module';
 import { PrismaModule } from './modules/prisma/prisma.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { join } from 'path';
-import { PokemonsModule } from './pokemons/pokemons.module';
-import { TypesModule } from './types/types.module';
+import { PokemonsModule } from './modules/pokemons/pokemons.module'; 
+import { TypesModule } from './modules/types/types.module'; 
 
 @Module({
   imports: [

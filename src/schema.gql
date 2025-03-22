@@ -2,6 +2,55 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type Type {
+  id: Int!
+  name: String!
+  pokemons: [Pokemon!]
+  created_at: String!
+}
+
+type Pokemon {
+  id: Int!
+  name: String!
+  types: [Type!]
+  created_at: String!
+}
+
 type Query {
   hello: String!
+  pokemons: [Pokemon!]!
+  pokemon(id: Int!): Pokemon!
+  findAllTypes: [Type!]!
+  findOneType(id: Float!): Type!
+}
+
+type Mutation {
+  createPokemon(createPokemonDto: CreatePokemonDto!): Pokemon!
+  updatePokemon(updatePokemonDto: UpdatePokemonDto!): Pokemon!
+  removePokemon(id: Int!): Pokemon!
+  createType(input: CreateTypeDto!): Type!
+  updateType(id: Float!, input: UpdateTypeDto!): Type!
+  removeType(id: Float!): Type!
+}
+
+input CreatePokemonDto {
+  """Pokemon Name"""
+  name: String!
+
+  """An array of types Ids"""
+  typeIds: [Int!]!
+}
+
+input UpdatePokemonDto {
+  """Pokemon Id"""
+  id: Float!
+}
+
+input CreateTypeDto {
+  name: String!
+}
+
+input UpdateTypeDto {
+  name: String
+  id: Int!
 }

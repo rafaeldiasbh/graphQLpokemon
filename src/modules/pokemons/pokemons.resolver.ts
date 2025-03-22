@@ -1,16 +1,16 @@
 import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
 import { PokemonsService } from './pokemons.service';
 import { Pokemon } from './entities/pokemon.entity';
-import { CreatePokemonInput } from './dto/create-pokemon.input';
-import { UpdatePokemonInput } from './dto/update-pokemon.input';
+import { CreatePokemonDto } from './dto/create-pokemon.dto';
+import { UpdatePokemonDto } from './dto/update-pokemon.dto';
 
 @Resolver(() => Pokemon)
 export class PokemonsResolver {
   constructor(private readonly pokemonsService: PokemonsService) {}
 
   @Mutation(() => Pokemon)
-  createPokemon(@Args('createPokemonInput') createPokemonInput: CreatePokemonInput) {
-    return this.pokemonsService.create(createPokemonInput);
+  createPokemon(@Args('createPokemonDto') createPokemonDto: CreatePokemonDto) {
+    return this.pokemonsService.createOne(createPokemonDto);
   }
 
   @Query(() => [Pokemon], { name: 'pokemons' })
@@ -24,12 +24,12 @@ export class PokemonsResolver {
   }
 
   @Mutation(() => Pokemon)
-  updatePokemon(@Args('updatePokemonInput') updatePokemonInput: UpdatePokemonInput) {
-    return this.pokemonsService.update(updatePokemonInput.id, updatePokemonInput);
+  updatePokemon(@Args('updatePokemonDto') updatePokemonDto: UpdatePokemonDto) {
+    return this.pokemonsService.updateOne(updatePokemonDto.id, updatePokemonDto);
   }
 
   @Mutation(() => Pokemon)
   removePokemon(@Args('id', { type: () => Int }) id: number) {
-    return this.pokemonsService.remove(id);
+    return this.pokemonsService.deleteOne(id);
   }
 }
