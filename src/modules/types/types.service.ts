@@ -1,7 +1,7 @@
 // src/modules/types/types.service.ts
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, In } from 'typeorm';
 import { Type } from './entities/type.entity';
 import { CreateTypeDto } from './dto/create-type.dto';
 import { UpdateTypeDto } from './dto/update-type.dto';
@@ -14,7 +14,8 @@ export class TypesService {
   ) {}
 
   async create(createTypeDto: CreateTypeDto): Promise<Type> {
-    const type = this.typeRepository.create(createTypeDto)[0];
+    createTypeDto.name = createTypeDto.name.toUpperCase();
+    const type = this.typeRepository.create(createTypeDto);
     return this.typeRepository.save(type);
   }
 
@@ -33,7 +34,7 @@ export class TypesService {
   }
 
   async findByIds(ids: number[]): Promise<Type[]> {
-    return this.typeRepository.findByIds(ids);
+    return this.typeRepository.findBy({ id: In(ids) });
   }
 
   async update(id: number, updateTypeDto: UpdateTypeDto): Promise<Type> {

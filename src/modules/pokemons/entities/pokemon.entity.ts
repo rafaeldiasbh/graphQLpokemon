@@ -17,10 +17,10 @@ export class Pokemon {
   @ManyToMany(() => Type, (type) => type.pokemons)
   @JoinTable()
   @Field(() => [Type], { nullable: true })
-  types: Type[];
+  types?: Type[];
 
   @Field(() => String)
   @Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
-  created_at: Date;
+  created_at?: Date;
 }
 

@@ -16,9 +16,9 @@ export class Type {
 
   @ManyToMany(() => Pokemon, (pokemon) => pokemon.types) 
   @Field(() => [Pokemon], { nullable: true }) 
-  pokemons: Pokemon[];
+  pokemons?: Pokemon[];
 
   @Field(() => String)
   @CreateDateColumn({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' }) 
-  created_at: Date;
+  created_at?: Date;
 }
