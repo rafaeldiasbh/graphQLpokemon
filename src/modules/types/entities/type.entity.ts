@@ -2,10 +2,11 @@
 import { ObjectType, Field, Int } from '@nestjs/graphql';
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToMany } from 'typeorm';
 import { Pokemon } from '../../pokemons/entities/pokemon.entity';
+import { BaseEntity } from '../../../common/entities/base.entity';
 
 @ObjectType()
 @Entity()
-export class Type {
+export class Type extends BaseEntity {
   @Field(() => Int)
   @PrimaryGeneratedColumn()
   id: number;

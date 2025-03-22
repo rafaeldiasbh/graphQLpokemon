@@ -1,35 +1,44 @@
-import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
-import { PokemonsService } from './pokemons.service';
+// src/modules/pokemons/pokemons.resolver.ts
+import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
 import { Pokemon } from './entities/pokemon.entity';
+import { PokemonsService } from './pokemons.service';
 import { CreatePokemonDto } from './dto/create-pokemon.dto';
 import { UpdatePokemonDto } from './dto/update-pokemon.dto';
+import { PaginationOptions, SortOptions, FilterOptions } from '../../common/entities/base.entity';
 
 @Resolver(() => Pokemon)
 export class PokemonsResolver {
   constructor(private readonly pokemonsService: PokemonsService) {}
 
-  @Mutation(() => Pokemon)
-  createPokemon(@Args('createPokemonDto') createPokemonDto: CreatePokemonDto) {
-    return this.pokemonsService.createOne(createPokemonDto);
+  @Query(() => [Pokemon])
+  async findAllPokemon(
+    @Args('pagination', { nullable: true }) pagination?: PaginationOptions,
+    @Args('sort', { nullable: true }) sort?: SortOptions,
+    @Args('filters', { nullable: true }) filters?: FilterOptions[],
+  ): Promise<{ data: Pokemon[]; total: number }> {
+    return this.pokemonsService.findAll(pagination, sort, filters);
   }
 
-  @Query(() => [Pokemon], { name: 'pokemons' })
-  findAll() {
-    return this.pokemonsService.findAll();
-  }
-
-  @Query(() => Pokemon, { name: 'pokemon' })
-  findOne(@Args('id', { type: () => Int }) id: number) {
+  @Query(() => Pokemon)
+  async findOnePokemon(@Args('id') id: number): Promise<Pokemon> {
     return this.pokemonsService.findOne(id);
   }
 
   @Mutation(() => Pokemon)
-  updatePokemon(@Args('updatePokemonDto') updatePokemonDto: UpdatePokemonDto) {
-    return this.pokemonsService.updateOne(updatePokemonDto.id, updatePokemonDto);
+  async createOnePokemon(@Args('input') input: CreatePokemonDto): Promise<Pokemon> {
+    return this.pokemonsService.createOne(input);
   }
 
   @Mutation(() => Pokemon)
-  removePokemon(@Args('id', { type: () => Int }) id: number) {
+  async updateOnePokemon(
+    @Args('id') id: number,
+    @Args('input') input: UpdatePokemonDto,
+  ): Promise<Pokemon> {
+    return this.pokemonsService.updateOne(id, input);
+  }
+
+  @Mutation(() => Pokemon)
+  async deleteOnePokemon(@Args('id') id: number): Promise<Pokemon> {
     return this.pokemonsService.deleteOne(id);
   }
 }
