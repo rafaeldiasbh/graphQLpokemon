@@ -16,9 +16,23 @@ type Pokemon {
   created_at: String!
 }
 
+type PokemonPaginatedResponse {
+  """List of items"""
+  data: [Pokemon!]!
+
+  """Total number of items"""
+  total: Int!
+
+  """Current page number"""
+  page: Int!
+
+  """Number of items per page"""
+  itemsPerPage: Int!
+}
+
 type Query {
   hello: String!
-  findAllPokemon(pagination: PaginationOptionsDto, sort: SortOptionsDto, filters: [FilterOptionsDto!]): [Pokemon!]!
+  findAllPokemon(pagination: PaginationOptionsDto, sort: SortOptionsDto, filters: [FilterOptionsDto!]): PokemonPaginatedResponse!
   findOnePokemon(id: Float!): Pokemon!
   findAllTypes: [Type!]!
   findOneType(id: Float!): Type!

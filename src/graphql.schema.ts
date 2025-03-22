@@ -56,10 +56,17 @@ export class Pokemon {
     created_at: string;
 }
 
+export class PokemonPaginatedResponse {
+    data: Pokemon[];
+    total: number;
+    page: number;
+    itemsPerPage: number;
+}
+
 export abstract class IQuery {
     abstract hello(): string | Promise<string>;
 
-    abstract findAllPokemon(pagination?: Nullable<PaginationOptionsDto>, sort?: Nullable<SortOptionsDto>, filters?: Nullable<FilterOptionsDto[]>): Pokemon[] | Promise<Pokemon[]>;
+    abstract findAllPokemon(pagination?: Nullable<PaginationOptionsDto>, sort?: Nullable<SortOptionsDto>, filters?: Nullable<FilterOptionsDto[]>): PokemonPaginatedResponse | Promise<PokemonPaginatedResponse>;
 
     abstract findOnePokemon(id: number): Pokemon | Promise<Pokemon>;
 

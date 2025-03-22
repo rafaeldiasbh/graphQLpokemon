@@ -8,7 +8,7 @@ import { UpdatePokemonDto } from './dto/update-pokemon.dto';
 import { TypesService } from '../types/types.service';
 import { FilterOptionsDto } from '../../common/dto/filter-options.dto';
 import { SortOptionsDto } from '../../common/dto/sort-options.dto';
-import { PaginationOptionsDto } from '../../common/dto/pagination-options.dto'; 
+import { PaginationOptionsDto } from '../../common/dto/pagination-options.dto';
 
 @Injectable()
 export class PokemonsService {
@@ -23,7 +23,15 @@ export class PokemonsService {
     sort?: SortOptionsDto,
     filters?: FilterOptionsDto[],
   ): Promise<{ data: Pokemon[]; total: number }> {
-    return Pokemon.findWithPagination(this.pokemonRepository, pagination, sort, filters);
+    return Pokemon.findWithPagination(
+      this.pokemonRepository,
+      pagination,
+      sort,
+      filters,
+      (query) => { //callback funtion to run additional non standart queries.
+        query.leftJoinAndSelect('entity.types', 'types'); // Add the join for the `types` table
+      },
+    );
   }
 
   async findOne(id: number): Promise<Pokemon> {
@@ -43,7 +51,7 @@ export class PokemonsService {
     const pokemon = this.pokemonRepository.create(input);
 
     if (input.typeIds) {
-      const types = await this.typesService.findByIds(input.typeIds); // Fetch types by IDs
+      const types = await this.typesService.findByIds(input.typeIds); 
       pokemon.types = types;
     }
 
@@ -62,7 +70,7 @@ export class PokemonsService {
     }
 
     if (input.typeIds) {
-      const types = await this.typesService.findByIds(input.typeIds); // Fetch types by IDs
+      const types = await this.typesService.findByIds(input.typeIds); 
       pokemon.types = types;
     }
 

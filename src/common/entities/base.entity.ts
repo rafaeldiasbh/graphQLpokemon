@@ -115,8 +115,12 @@ export class BaseEntity {
     pagination?: PaginationOptionsDto, // Use PaginationOptionsDto
     sort?: SortOptionsDto, // Use SortOptionsDto
     filters?: FilterOptionsDto[], // Use FilterOptionsDto
+    modifyQuery?: (query: SelectQueryBuilder<T>) => void, //Execute extra query commands afer base query
   ): Promise<{ data: T[]; total: number }> {
     const query = this.applyConditions(repository, pagination, sort, filters);
+    if (modifyQuery) {
+      modifyQuery(query); //run aditional non generic queries
+    }
     const [data, total] = await query.getManyAndCount();
     return { data, total };
   }

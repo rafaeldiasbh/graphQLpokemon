@@ -7,18 +7,27 @@ import { UpdatePokemonDto } from './dto/update-pokemon.dto';
 import { FilterOptionsDto } from '../../common/dto/filter-options.dto';
 import { SortOptionsDto } from '../../common/dto/sort-options.dto';
 import { PaginationOptionsDto } from '../../common/dto/pagination-options.dto'; 
+import { PokemonPaginatedResponse } from './dto/pokemon-paginated-response.dto';
 
 @Resolver(() => Pokemon)
 export class PokemonsResolver {
   constructor(private readonly pokemonsService: PokemonsService) {}
 
-  @Query(() => [Pokemon])
+  @Query(() => PokemonPaginatedResponse)
   async findAllPokemon(
     @Args('pagination', { type: () => PaginationOptionsDto, nullable: true }) pagination?: PaginationOptionsDto,
     @Args('sort', { type: () => SortOptionsDto, nullable: true }) sort?: SortOptionsDto,
     @Args('filters', { type: () => [FilterOptionsDto], nullable: true }) filters?: FilterOptionsDto[],
-  ): Promise<{ data: Pokemon[]; total: number }> {
-    return this.pokemonsService.findAll(pagination, sort, filters);
+  ): Promise<PokemonPaginatedResponse> {
+    const result = await this.pokemonsService.findAll(pagination, sort, filters);
+
+    return new PokemonPaginatedResponse(
+      result.data, // List of Pokémon
+      result.total, // Total number of Pokémon
+      pagination?.page || 1, // Current page number (default to 1 if not provided)
+      pagination?.itemsPerPage || 10, // Items per page (default to 10 if not provided)
+    );
+    
   }
 
   @Query(() => Pokemon)
