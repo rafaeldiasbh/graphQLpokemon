@@ -45,7 +45,7 @@ This is a **NestJS** and **GraphQL** API for managing Pokémon data. It uses **T
 
 1. **Clone the repository**:
    ```bash
-   git clone https://github.com/your-username/your-repo.git
+   git clone git@github.com:rafaeldiasbh/graphQLpokemon.git
    ```
 
 2. **Install dependencies**:
