@@ -46,6 +46,12 @@ export class PokemonsResolver {
     return this.pokemonsService.findOne(id);
   }
 
+  @Query(() => Pokemon)
+  async importPokemonById(@Args('id') id: number): Promise<Pokemon> {
+    return this.pokemonsService.importPokemonById(id);
+  }
+
+
   @Mutation(() => Pokemon)
   async createOnePokemon(@Args('input') input: CreatePokemonDto): Promise<Pokemon> {
     return this.pokemonsService.createOne(input);

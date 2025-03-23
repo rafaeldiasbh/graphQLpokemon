@@ -34,6 +34,7 @@ type Query {
   hello: String!
   findAllPokemon(pagination: PaginationOptionsDto, sort: SortOptionsDto, filters: [FilterOptionsDto!]): PokemonPaginatedResponse!
   findOnePokemon(id: Float!): Pokemon!
+  importPokemonById(id: Float!): Pokemon!
   findAllTypes: [Type!]!
   findOneType(id: Float!): Type!
 }

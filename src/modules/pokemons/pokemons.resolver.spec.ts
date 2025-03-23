@@ -90,7 +90,7 @@ describe('PokemonsResolver (E2E Style No Service Mocking)', () => {
     it('should throw NotFoundException if pokemon is not found', async () => {
       await expect(resolver.findOnePokemon(999)).rejects.toThrow(
         'Pokemon with ID 999 not found',
-      );;
+      );
     });
   });
 
@@ -148,7 +148,7 @@ describe('PokemonsResolver (E2E Style No Service Mocking)', () => {
     });
 
     it('should throw NotFoundException if pokemon is not found', async () => {
-      await expect(resolver.deleteOnePokemon(999)).rejects.toThrowError(
+      await expect(resolver.deleteOnePokemon(999)).rejects.toThrow(
         'Pokemon with ID 999 not found',
       );
     });
@@ -167,6 +167,25 @@ describe('PokemonsResolver (E2E Style No Service Mocking)', () => {
       expect(result).toBeDefined();
       expect(result).toHaveLength(1);
       expect(result[0].name).toBe('ELETRIC');
+    });
+  });
+
+  describe('importPokemonById', () => {
+    it('should import a Pokémon by ID and return it', async () => {
+      // Call the resolver method with a valid PokeAPI ID (e.g., 25 for Pikachu)
+      const result = await resolver.importPokemonById(25);
+
+      // Assertions
+      expect(result).toBeDefined();
+      expect(result.name).toBe('pikachu');
+      expect(result.types.length).toBeGreaterThan(0);
+    });
+
+    it('should throw NotFoundException if Pokémon is not found in PokeAPI', async () => {
+      // Call the resolver method with an invalid PokeAPI ID
+      await expect(resolver.importPokemonById(99999)).rejects.toThrow(
+        'Pokemon with ID 99999 not found in PokeAPI',
+      );
     });
   });
 });

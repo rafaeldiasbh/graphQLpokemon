@@ -82,6 +82,8 @@ export abstract class IMutation {
 
     abstract deleteOnePokemon(id: number): Pokemon | Promise<Pokemon>;
 
+    abstract importPokemonById(id: number): Pokemon | Promise<Pokemon>;
+
     abstract createType(input: CreateTypeDto): Type | Promise<Type>;
 
     abstract updateType(id: number, input: UpdateTypeDto): Type | Promise<Type>;

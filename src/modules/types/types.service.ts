@@ -67,4 +67,24 @@ export class TypesService {
     await this.typeRepository.delete(id);
     return type;
   }
+
+  async findOrCreateTypesByName(names: string[]): Promise<Type[]> {
+    const types: Type[] = [];
+
+    for (let name of names) {
+      name = name.toUpperCase();
+      let type = await this.typeRepository.findOne({ where: { name } });
+
+      if (!type) {
+        type = this.typeRepository.create({ name });
+        await this.typeRepository.save(type);
+      }
+
+      types.push(type);
+    }
+
+    return types;
+  }
+
+  
 }

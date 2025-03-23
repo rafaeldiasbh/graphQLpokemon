@@ -94,4 +94,28 @@ export class PokemonsService {
     await this.pokemonRepository.delete(id);
     return pokemon;
   }
+
+  async importPokemonById(id: number): Promise<Pokemon> {
+    const pokemonApiUri = `https://pokeapi.co/api/v2/pokemon/${id}`;
+
+    const response = await fetch(pokemonApiUri);
+    if (!response.ok) {
+      throw new NotFoundException(`Pokemon with ID ${id} not found in PokeAPI`);
+    }
+
+    const pokemonData = await response.json();
+
+    const pokemon = new Pokemon();
+    pokemon.id = pokemonData.id;
+    pokemon.name = pokemonData.name;
+
+    // Handle types
+    const typeNames = pokemonData.types.map((type) => type.type.name);
+    const types = await this.typesService.findOrCreateTypesByName(typeNames);
+    pokemon.types = types;
+    
+    // create or update the pokemon
+    return this.pokemonRepository.save(pokemon);
+    
+  }
 }
