@@ -47,13 +47,21 @@ input PaginationOptionsDto {
 }
 
 input SortOptionsDto {
+  """The field to sort by"""
   field: String!
+
+  """The sort order (ASC or DESC)"""
   order: String!
 }
 
 input FilterOptionsDto {
+  """The field to filter by"""
   field: String!
+
+  """The value to filter by"""
   value: String!
+
+  """The operator to use for filtering"""
   operator: String
 }
 

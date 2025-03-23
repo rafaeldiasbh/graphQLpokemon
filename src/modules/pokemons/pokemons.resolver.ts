@@ -1,5 +1,5 @@
 // src/modules/pokemons/pokemons.resolver.ts
-import { Resolver, Query, Mutation, Args, Parent, ResolveField, Root } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args, ResolveField, Root } from '@nestjs/graphql';
 import { Pokemon } from './entities/pokemon.entity';
 import { PokemonsService } from './pokemons.service';
 import { CreatePokemonDto } from './dto/create-pokemon.dto';
