@@ -37,6 +37,15 @@ export class TypesService {
     return this.typeRepository.findBy({ id: In(ids) });
   }
 
+  async findByPokemonIds(pokemonIds: number[]): Promise<Type[]> {
+    console.log('findByPokemonIds called for pokemon IDs:', pokemonIds); // Debugging
+    return this.typeRepository
+      .createQueryBuilder('type')
+      .leftJoinAndSelect('type.pokemons', 'pokemon')
+      .where('pokemon.id IN (:...pokemonIds)', { pokemonIds })
+      .getMany();
+  }
+
   async update(id: number, updateTypeDto: UpdateTypeDto): Promise<Type> {
     const type = await this.typeRepository.findOneBy({ id });
 

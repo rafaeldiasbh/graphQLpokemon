@@ -1,7 +1,7 @@
 // src/modules/pokemons/pokemons.service.ts
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, In } from 'typeorm';
 import { Pokemon } from './entities/pokemon.entity';
 import { CreatePokemonDto } from './dto/create-pokemon.dto';
 import { UpdatePokemonDto } from './dto/update-pokemon.dto';
@@ -28,9 +28,9 @@ export class PokemonsService {
       pagination,
       sort,
       filters,
-      (query) => { //callback funtion to run additional non standart queries.
-        query.leftJoinAndSelect('entity.types', 'types'); // Add the join for the `types` table
-      },
+      // (query) => { //callback funtion to run additional non standart queries.
+      //   query.leftJoinAndSelect('entity.types', 'types'); // Add the join for the `types` table
+      // }, //removed to prevent eager loading
     );
   }
 
@@ -45,6 +45,13 @@ export class PokemonsService {
     }
 
     return pokemon;
+  }
+
+  async findByIds(ids: number[]): Promise<Pokemon[]> {
+    return this.pokemonRepository.find({
+      where: { id: In(ids) }, 
+      relations: ['types'], 
+    });
   }
 
   async createOne(input: CreatePokemonDto): Promise<Pokemon> {

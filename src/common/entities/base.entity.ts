@@ -1,3 +1,4 @@
+// src/common/entities/base.entity.ts
 import { Repository, SelectQueryBuilder } from 'typeorm';
 import { NotFoundException } from '@nestjs/common';
 import { PaginationOptionsDto } from '../dto/pagination-options.dto';
