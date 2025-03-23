@@ -12,6 +12,7 @@ import { TypesService } from '../types/types.service';
 import { Type } from '../types/entities/type.entity';
 import { createTypesLoader } from '../../common/loaders/types.loader';
 import DataLoader from 'dataloader';
+import { Throttle } from '@nestjs/throttler';
 
 @Resolver(() => Pokemon)
 export class PokemonsResolver {
@@ -39,6 +40,7 @@ export class PokemonsResolver {
     );
   }
 
+  @Throttle({ default: { limit: 10, ttl: 60000, blockDuration: 10000 } })
   @Query(() => Pokemon)
   async findOnePokemon(@Args('id') id: number): Promise<Pokemon> {
     return this.pokemonsService.findOne(id);
