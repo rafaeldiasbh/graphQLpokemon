@@ -13,7 +13,7 @@ export class TypesService {
     private readonly typeRepository: Repository<Type>,
   ) {}
 
-  async create(createTypeDto: CreateTypeDto): Promise<Type> {
+  async createOne(createTypeDto: CreateTypeDto): Promise<Type> {
     createTypeDto.name = createTypeDto.name.toUpperCase();
     const type = this.typeRepository.create(createTypeDto);
     return this.typeRepository.save(type);

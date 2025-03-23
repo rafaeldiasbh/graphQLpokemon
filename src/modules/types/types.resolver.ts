@@ -11,7 +11,7 @@ export class TypesResolver {
 
   @Mutation(() => Type)
   createType(@Args('input') input: CreateTypeDto): Promise<Type> {
-    return this.typesService.create(input);
+    return this.typesService.createOne(input);
   }
 
   @Query(() => [Type])
