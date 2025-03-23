@@ -88,9 +88,9 @@ describe('PokemonsResolver (E2E Style No Service Mocking)', () => {
     });
 
     it('should throw NotFoundException if pokemon is not found', async () => {
-      await expect(resolver.findOnePokemon(999)).rejects.toThrowError(
+      await expect(resolver.findOnePokemon(999)).rejects.toThrow(
         'Pokemon with ID 999 not found',
-      );
+      );;
     });
   });
 
